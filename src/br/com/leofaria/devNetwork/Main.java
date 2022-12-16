@@ -1,6 +1,6 @@
-package br.com.leofaria;
+package br.com.leofaria.devNetwork;
 
-import br.com.leofaria.socialNetwork.EnumSocialNetwork;
+import br.com.leofaria.devNetwork.socialNetwork.EnumSocialNetwork;
 
 public class Main {
     public static void main(String[] args) {

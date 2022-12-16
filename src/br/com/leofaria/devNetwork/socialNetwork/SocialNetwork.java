@@ -1,7 +1,7 @@
-package br.com.leofaria.socialNetwork;
+package br.com.leofaria.devNetwork.socialNetwork;
 
-import br.com.leofaria.user.User;
-import br.com.leofaria.utility.PrintFormat;
+import br.com.leofaria.devNetwork.utility.PrintFormat;
+import br.com.leofaria.devNetwork.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +17,7 @@ class SocialNetwork {
     
     SocialNetwork() {
         addAdm();
+        PrintFormat.printLine('*');
         createNewUser();
     }
     

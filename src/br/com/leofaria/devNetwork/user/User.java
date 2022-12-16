@@ -1,6 +1,6 @@
-package br.com.leofaria.user;
+package br.com.leofaria.devNetwork.user;
 
-import br.com.leofaria.post.Post;
+import br.com.leofaria.devNetwork.post.Post;
 
 import java.util.ArrayList;
 import java.util.List;

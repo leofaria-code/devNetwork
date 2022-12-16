@@ -1,4 +1,4 @@
-package br.com.leofaria.socialNetwork;
+package br.com.leofaria.devNetwork.socialNetwork;
 
 public enum EnumSocialNetwork {
     INSTANCE;

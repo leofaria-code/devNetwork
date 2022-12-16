@@ -1,4 +1,4 @@
-package br.com.leofaria.post;
+package br.com.leofaria.devNetwork.post;
 
 public class Post {
     

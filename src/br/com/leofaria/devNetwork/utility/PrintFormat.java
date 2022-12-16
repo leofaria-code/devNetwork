@@ -1,4 +1,4 @@
-package br.com.leofaria.utility;
+package br.com.leofaria.devNetwork.utility;
 
 public class PrintFormat {
     static final int PRINT_width = 100;
