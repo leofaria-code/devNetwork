@@ -8,7 +8,7 @@ public class PrintFormat {
         printMessage(msg);
         printLine('=');
     }
-    public void printHeader(String msg){
+    public static void printHeader(String msg){
         printLine('#');
         printMessage(msg);
         printLine('#');
@@ -22,7 +22,7 @@ public class PrintFormat {
     public static void printMessage(String msg){
         System.out.printf("\n%s %-94s %3s", "|", msg, "|");
     }
-    public void cleanConsole(){
+    public static void clearConsole(){
         for (int i = 0; i < 13; ++i)
             System.out.println();
     }
