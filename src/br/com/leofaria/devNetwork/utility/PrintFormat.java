@@ -23,7 +23,7 @@ public class PrintFormat {
         System.out.printf("\n%s %-94s %3s", "|", msg, "|");
     }
     public static void clearConsole(){
-        for (int i = 0; i < 13; ++i)
+        for (int i = 0; i < 6; ++i)
             System.out.println();
     }
 }

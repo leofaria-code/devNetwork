@@ -1,14 +1,16 @@
 package br.com.leofaria.devNetwork.socialNetwork.menu;
 
+import br.com.leofaria.devNetwork.utility.DialogFormat;
+
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuMain {
     
-    private int indexNum;
-    private char indexChar;
-    private String description;
+    private final int indexNum;
+    private final char indexChar;
+    private final String description;
     
     public static List<MenuMain> mainMenu = new ArrayList<>();
     
@@ -21,15 +23,15 @@ public class MenuMain {
     public int getIndexNum() {
         return indexNum;
     }
-    
+
     public char getIndexChar() {
         return indexChar;
     }
-    
+
     public String getDescription() {
         return description;
     }
-    
+
     public static List<MenuMain> getMainMenu() {
         return mainMenu;
     }
@@ -47,35 +49,51 @@ public class MenuMain {
         final MenuMain FECHAR = new MenuMain(EnumMenuOptions.FECHAR.getIndexNum(),
                 EnumMenuOptions.FECHAR.getIndexChar(),
                 EnumMenuOptions.FECHAR.getDescription());
-        
-        mainMenu.add(ENTRAR);
-        mainMenu.add(CADASTRAR);
-        mainMenu.add(LISTAR);
-        mainMenu.add(FECHAR);
+        mainMenu.add(ENTRAR); mainMenu.add(CADASTRAR); mainMenu.add(LISTAR); mainMenu.add(FECHAR);
     }
     
-    public static void testeVisual() {
-        String menu = "MENU PRINCIPAL: o que você deseja fazer?\n";
+    public static int askInputAtMenuMain() {
+        StringBuilder menu = new StringBuilder(DialogFormat.header(" MENU PRINCIPAL: o que você deseja fazer? "));
         for (MenuMain mainMenuOption : mainMenu) {
-            String menu_num = String.valueOf(mainMenuOption.indexNum);
-            String menu_char = String.valueOf(mainMenuOption.indexChar);
-            String menu_description = mainMenuOption.description.toString();
-            String menu_line = "\n"+ menu_num + " - " + menu_char + " : " + menu_description;
-            menu += menu_line;
+            String menu_line = "\n"+ mainMenuOption.indexNum
+                    + " - " + mainMenuOption.indexChar
+                    + " : " + mainMenuOption.description;
+            menu.append(menu_line);
         }
-        menu += "\n\n> Digite o caractere ou número correspondente à opção escolhida:\n";
+        menu.append("\n\n>DIGITE o número correspondente à opção escolhida: \n\n");
         
-        String strOpcao = JOptionPane.showInputDialog(null,menu).toUpperCase();
+        String dialogMenu = menu.toString();
+        
+        int inputNum = 99;
+        String inputString;
+        
+        inputString = JOptionPane.showInputDialog(null, dialogMenu);
     
-        System.out.println("\nDigitou: " + strOpcao);
-
-
-
-//        String menu1_num = String.valueOf(mainMenu.get(0).indexNum);
-//        String menu1_char = String.valueOf(mainMenu.get(0).indexChar);
-//        String menu1_description = mainMenu.get(0).description.toString();
-//
-//        String menu1 = menu1_num + " - " + menu1_char + " : " + menu1_description;
+        switch (inputString) {
+            case "e", "E", "1":
+                inputString = inputString.toUpperCase();
+                inputNum = 1;
+                break;
+            case "c", "C", "2":
+                inputString = inputString.toUpperCase();
+                inputNum = 2;
+                break;
+            case "l", "L", "3":
+                inputString = inputString.toUpperCase();
+                inputNum = 3;
+                break;
+            case "x", "X", "4":
+                inputString = inputString.toUpperCase();
+                inputNum = 4;
+                break;
+            default:
+                System.out.println("Valor inválido! Digite um número!");
+                askInputAtMenuMain();
+                break;
+        }
+        
+        return inputNum;
+        
     }
     
 }
