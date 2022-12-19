@@ -6,32 +6,11 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuMain {
+public record MenuMain(int indexNum, char indexChar, String description) {
     
-    private final int indexNum;
-    private final char indexChar;
-    private final String description;
+    static List<MenuMain> mainMenu = new ArrayList<>();
+    public static String dialogMenuMain;
     
-    public static List<MenuMain> mainMenu = new ArrayList<>();
-    
-    public MenuMain(int indexNum, char indexChar, String description) {
-        this.indexNum = indexNum;
-        this.indexChar = indexChar;
-        this.description = description;
-    }
-    
-    public int getIndexNum() {
-        return indexNum;
-    }
-
-    public char getIndexChar() {
-        return indexChar;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
     public static List<MenuMain> getMainMenu() {
         return mainMenu;
     }
@@ -49,41 +28,43 @@ public class MenuMain {
         final MenuMain FECHAR = new MenuMain(EnumMenuOptions.FECHAR.getIndexNum(),
                 EnumMenuOptions.FECHAR.getIndexChar(),
                 EnumMenuOptions.FECHAR.getDescription());
-        mainMenu.add(ENTRAR); mainMenu.add(CADASTRAR); mainMenu.add(LISTAR); mainMenu.add(FECHAR);
+        mainMenu.add(ENTRAR);
+        mainMenu.add(CADASTRAR);
+        mainMenu.add(LISTAR);
+        mainMenu.add(FECHAR);
     }
     
-    public static int askInputAtMenuMain() {
+    static void showMenuMain() {
         StringBuilder menu = new StringBuilder(DialogFormat.header(" MENU PRINCIPAL: o que você deseja fazer? "));
         for (MenuMain mainMenuOption : mainMenu) {
-            String menu_line = "\n"+ mainMenuOption.indexNum
+            String menu_line = "\n" + mainMenuOption.indexNum
                     + " - " + mainMenuOption.indexChar
                     + " : " + mainMenuOption.description;
             menu.append(menu_line);
         }
         menu.append("\n\n>DIGITE o número correspondente à opção escolhida: \n\n");
+        dialogMenuMain = menu.toString();
+    }
+    
+    public static int askInputAtMenuMain() {
+        showMenuMain();
         
-        String dialogMenu = menu.toString();
-        
-        int inputNum = 99;
+        int inputNum = 9999999;
         String inputString;
         
-        inputString = JOptionPane.showInputDialog(null, dialogMenu);
+        inputString = JOptionPane.showInputDialog(null, dialogMenuMain).toUpperCase();
     
         switch (inputString) {
-            case "e", "E", "1":
-                inputString = inputString.toUpperCase();
+            case "E", "1":
                 inputNum = 1;
                 break;
-            case "c", "C", "2":
-                inputString = inputString.toUpperCase();
+            case "C", "2":
                 inputNum = 2;
                 break;
-            case "l", "L", "3":
-                inputString = inputString.toUpperCase();
+            case "L", "3":
                 inputNum = 3;
                 break;
-            case "x", "X", "4":
-                inputString = inputString.toUpperCase();
+            case "X", "4":
                 inputNum = 4;
                 break;
             default:

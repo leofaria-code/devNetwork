@@ -17,12 +17,24 @@ class SocialNetwork {
     List<Post> posts = new ArrayList<>();
     List<User> users = new ArrayList<>();
     
+//    int inputAtMenuMain;
+    int optionAtMenuMain;
+    
+    private int newUserID = 0;
+    private String newName = null;
+    private String newUsername = null;
+    private String newPassword = null;
+    
     SocialNetwork() {
-        addAdm();
+        addAdm();                                          // adiciona user[0] como ADMIN
         MenuMain.populateMenuMain();
         firstRun();
-        int inputAtMenuMain = openMenuMain();
-        socialNetworkOptions(inputAtMenuMain);
+        menuMain();
+    }
+    
+    private void menuMain() {
+        openMenuMain();
+        socialNetworkOptions(optionAtMenuMain);
     }
     
     private void socialNetworkOptions(int num) {
@@ -33,9 +45,11 @@ class SocialNetwork {
                 break;
             case 2:
                 createNewUser();
+                menuMain();
                 break;
             case 3:
                 System.out.println("Usuários atuais!");
+                menuMain();
 //                showAllUsers();
                 break;
             case 4:
@@ -43,8 +57,121 @@ class SocialNetwork {
                 break;
             default:
                 System.out.println("Valor inválido! Digite um número!");
+                menuMain();
                 break;
         }
+    }
+    
+    private void openMenuMain() {
+        optionAtMenuMain = MenuMain.askInputAtMenuMain();
+    }
+    
+    private void firstRun() {
+        PrintFormat.clearConsole();
+        welcomeStrange();
+        PrintFormat.clearConsole();
+    }
+    
+    public void welcomeStrange(){
+        String msg = "Seja bem vindo à rede social SINQUIA #dev_makers2, Let's Code by ADA";
+        PrintFormat.printHeader(msg);
+    }
+    
+    private void addAdm() {
+        final User ADMIN = new User(0,"ADM da SilvaSauro", "admin", "123");
+        users.add(ADMIN);
+    }
+    private void createNewUser() {
+        getNewUserID();
+        JOptionPane.showMessageDialog(null, "Seu ID de usuário é: " + newUserID);
+        askNewName();
+        JOptionPane.showMessageDialog(null, "Seu NOME é: " + newName);
+        askNewUsername();
+        JOptionPane.showMessageDialog(null, "Seu USERNAME é: " + newUsername);
+        askNewPassword();
+        JOptionPane.showMessageDialog(null, "Sua SENHA é: " + newPassword);
+        users.add(new User(newUserID, newName, newUsername, newPassword));
+        PrintFormat.printLine('=');
+        System.out.printf("\n| %-4s | %-41s | %-21s | %-21s |", " ID ", "NOME", "USERNAME", "PASSWORD");
+        PrintFormat.printLine('-');
+        System.out.printf("\n| %04d | %-41s | %-21s | %-21s |",
+                users.get(newUserID).getIdUser(),
+                users.get(newUserID).getName(),
+                users.get(newUserID).getUsername(),
+                users.get(newUserID).getPassword());
+        PrintFormat.printLine('=');
+        PrintFormat.printMessage("Cadastrado com sucesso!!!");
+        
+//        followUp("Tecle ENTER para retornar ao MENU PRINCIPAL");
+    
+    }
+    
+    private void getNewUserID() {
+        if (users.isEmpty()) {
+            newUserID = 0;
+        } else {
+            newUserID = users.size();
+        }
+        JOptionPane.showMessageDialog(null, "Seu ID de usuário é: " + newUserID);
+    }
+    
+    private void askNewName() {
+        StringBuilder dialogNewUser = new StringBuilder(DialogFormat.header(" CADASTRO de novo usuário "));
+        dialogNewUser.append("\n\n> CADASTRE seu nome: \n\n");
+        String nameInput = JOptionPane.showInputDialog(null, dialogNewUser.toString());
+        boolean nameNotEmpty = verifyNotEmptyInput(nameInput);
+        if (nameNotEmpty) {
+            newName = nameInput;
+        } else {
+            askNewName();
+        }
+    }
+    
+    private void askNewUsername() {
+        StringBuilder dialogNewUsername = new StringBuilder(DialogFormat.header(" CADASTRO de novo usuário "));
+        dialogNewUsername.append("\n\n> CADASTRE seu novo username exclusivo: \n\n");
+        String usernameInput = JOptionPane.showInputDialog(null, dialogNewUsername.toString());
+        boolean usernameNotEmpty = verifyNotEmptyInput(usernameInput);
+        boolean usernameUnique = verifyUsernameAvialable(usernameInput);
+        if (usernameNotEmpty && usernameUnique) {
+            newUsername = usernameInput;
+        } else {
+            askNewUsername();
+        }
+    }
+    private boolean verifyUsernameAvialable(String usernameInput) {
+        boolean usernameAlreadyTaken = false;
+        for (User user:users) {
+            if (usernameInput.equalsIgnoreCase(users.get(user.idUser).getUsername())) {
+                usernameAlreadyTaken = true;
+            }
+        }
+        boolean usernameIsAvailable = !usernameAlreadyTaken;
+        return usernameIsAvailable;
+    }
+    
+    private boolean verifyNotEmptyInput(String userInput) {
+        return (!userInput.isEmpty() && !userInput.isBlank());
+    }
+    
+    private void askNewPassword() {
+        StringBuilder dialogNewPassword = new StringBuilder(DialogFormat.header(" CADASTRO de novo usuário "));
+        dialogNewPassword.append("\n\n> CADASTRE sua senha: \n\n");
+        String passwordInput = JOptionPane.showInputDialog(null,dialogNewPassword.toString());
+        boolean passwordNotEmpty = verifyNotEmptyInput(passwordInput);
+        boolean samePasswordInputTwice = verifySameInputTwice(passwordInput);
+        if (passwordNotEmpty && samePasswordInputTwice) {
+            newPassword = passwordInput;
+        } else {
+            askNewPassword();
+        }
+    }
+    
+    private boolean verifySameInputTwice(String input) {
+        StringBuilder dialogNewPassword = new StringBuilder(DialogFormat.header(" CADASTRO de novo usuário "));
+        dialogNewPassword.append("\n\n> Digite NOVAMENTE sua senha: \n\n");
+        String inputAgain = JOptionPane.showInputDialog(null,dialogNewPassword.toString());
+        return (input.equals(inputAgain));
     }
     
     private void close() {
@@ -58,107 +185,4 @@ class SocialNetwork {
             close();
         }
     }
-    
-    private int openMenuMain() {
-        int optionAtMenuMain = MenuMain.askInputAtMenuMain();
-        return optionAtMenuMain;
-    }
-    
-    private void firstRun() {
-        PrintFormat.clearConsole();
-        welcomeStrange();
-        PrintFormat.clearConsole();
-    }
-    
-    public void welcomeStrange(){
-        String msg = "Seja bem vindo à rede social SINQUIA #dev_makers2, Let's Code by ADA";
-        PrintFormat.printHeader(msg);
-    }
-    private void addAdm() {
-        final User ADMIN = new User(0,"ADM da SilvaSauro", "admin", "123");
-        users.add(ADMIN);
-    }
-    
-    private void createNewUser() {
-        int newId = users.size();
-//        String title = " CADASTRO de novo usuário ";
-//        PrintFormat.printTitle(title);
-//        inputString = JOptionPane.showInputDialog(null, dialogMenu);
-//        String newName = JOptionPane.showInputDialog("> Digite seu nome: ");
-        StringBuilder dialogNewUser = new StringBuilder(DialogFormat.header(" CADASTRO de novo usuário "));
-        dialogNewUser.append("\n\n> DIGITE seu nome: \n\n");
-        String newName = JOptionPane.showInputDialog(null, dialogNewUser.toString());
-        String newUsername = askNewUsername().toLowerCase();
-        String newPassword = askNewPassword();
-        users.add(new User(newId, newName, newUsername, newPassword));
-        PrintFormat.printLine('=');
-        System.out.printf("\n| %-4s | %-41s | %-21s | %-21s |", " ID ", "NOME", "USERNAME", "PASSWORD");
-        PrintFormat.printLine('-');
-        System.out.printf("\n| %04d | %-41s | %-21s | %-21s |",
-                users.get(newId).getIdUser(),
-                users.get(newId).getName(),
-                users.get(newId).getUsername(),
-                users.get(newId).getPassword());
-        PrintFormat.printLine('=');
-        PrintFormat.printMessage("Cadastrado com sucesso!!!");
-//        followUp("Tecle ENTER para retornar ao MENU PRINCIPAL");
-    
-    }
-    private String askNewUsername() {
-        StringBuilder dialogNewUsername = new StringBuilder(DialogFormat.header(" CADASTRO de novo usuário "));
-        dialogNewUsername.append("\n\n> CADASTRE seu novo username exclusivo: \n\n");
-        String usernameInput = null;
-        String usernameInput1 = JOptionPane.showInputDialog(null, dialogNewUsername.toString()).toLowerCase();
-        usernameInput = usernameInput1;
-        String usernameValidated = usernameInput;
-        if (usernameInput.isEmpty()) {
-            System.out.println("\n USERNAME NÃO PODE SER VAZIO!!! \n");
-            askNewUsername();
-        } else {
-            if (!verifyUsernameAvialable(usernameInput)){
-                System.out.println("\n ESSE USERNAME JÁ EXISTE! Escolha outro! \n");
-                askNewUsername();
-            } else {
-                System.out.println("\n PERFEITO, USERNAME DISPONÍVEL \n");
-                usernameValidated = usernameInput;
-            }
-        }
-//        } else if (!verifyUsernameAvialable(usernameInput)) {
-//            System.out.println("\n ESSE USERNAME JÁ EXISTE! Escolha outro! \n");
-//            askNewUsername();
-//        } else {
-//            System.out.println("\n PERFEITO, USERNAME DISPONÍVEL \n");
-//            usernameNotTaken = usernameInput;
-//        }
-        return usernameValidated;
-    }
-    
-    private boolean verifyUsernameAvialable(String usernameInput) {
-        boolean usernameTaken = false;
-        for (User user:users) {
-            if (usernameInput.equals(users.get(user.idUser).getUsername())) {
-                usernameTaken = true;
-            }
-        }
-        if (usernameTaken) {
-            System.out.println("\n ESSE USERNAME JÁ EXISTE\n");
-        } else {
-            System.out.println("\n PERFEITO, USERNAME DISPONÍVEL\n");
-        }
-        boolean usernameAvailable = !usernameTaken;
-        return usernameAvailable;
-    }
-    
-    private String askNewPassword() {
-        String passwordInput = JOptionPane.showInputDialog("> Digite sua nova senha: ");
-        String passwordInputCheck = JOptionPane.showInputDialog("> Digite novamente sua senha: ");
-        if (!passwordInputCheck.equals(passwordInput)) {
-            String text = "As senhas digitadas não coincidem. Cadastre nova senha!";
-            PrintFormat.printMessage(text);
-            System.out.println();
-            askNewPassword();
-        }
-        return passwordInput;
-    }
-    
 }
