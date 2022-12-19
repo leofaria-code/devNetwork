@@ -1,26 +1,11 @@
 package br.com.leofaria.devNetwork.post;
 
 public class Post {
-    
     public int idPostUser;
     public int idUser;
-    
     public String timeStamp;
     public String content;
     
-    
-    private static Post instancia = null;
-    public static void main() {
-        Post instancia = obterInstancia();
-    }
-    private static synchronized Post obterInstancia() {
-        if (instancia == null) instancia = new Post();
-        return instancia;
-    }
-    
-    Post() {
-    
-    }
     
     public Post(int idPostUser, int idUser, String timeStamp, String content) {
         this.idPostUser = idPostUser;
