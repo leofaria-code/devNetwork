@@ -6,5 +6,4 @@ public enum EnumSocialNetwork {
     public void newNetwork() {
         new SocialNetwork();
     }
-    
 }

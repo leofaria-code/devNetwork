@@ -44,12 +44,12 @@ public class User {
     private void setPassword(String password) {
         this.password = password;
     }
-    
-    public List<Post> getUserPost() {
-        return userPost;
-    }
-    
-    private void makeNewPost () {
-        System.out.println("implementar user.novoPost!!!");
-    }
+
+//    public List<Post> getUserPost() {
+//        return userPost;
+//    }
+//
+//    private void makeNewPost () {
+//        System.out.println("implementar user.novoPost!!!");
+//    }
 }
