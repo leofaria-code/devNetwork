@@ -22,6 +22,10 @@ public class User {
         this.userPost = new ArrayList<Post>();
     }
     
+//    public void openUserMenu(int verifyPassword) {
+//        System.out.printf("Menu do Usuário: %s", this.username);
+//    }
+    
     public int getIdUser() {
         return idUser;
     }

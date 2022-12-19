@@ -17,9 +17,12 @@ class SocialNetwork {
 //    public List<Post> posts = new ArrayList<>();
     
     private String dialogMenuMain;
-    private String inputString;
+    //    private String inputString;
     private int inputNum;
     private int optionAtMenuMain;
+    
+    private int idOfUsernameVerified;
+    private int idAfterPasswordChecked;
     
     private int newUserID = 0;
     private String newName = null;
@@ -70,7 +73,7 @@ class SocialNetwork {
     }
     public void getInputAtMenuMainConvertedtoNum() {
         showMenuMain();
-        inputString = JOptionPane.showInputDialog(null, dialogMenuMain);
+        String inputString = JOptionPane.showInputDialog(null, dialogMenuMain);
         boolean inputNotNull = verifyNotNullInput(inputString);
         if (!inputNotNull) {
             close();
@@ -114,8 +117,7 @@ class SocialNetwork {
     }
     private void socialNetworkActions(int num) {
         switch (num) {
-            case 1 -> System.out.println("Log in!");
-//                signIn();
+            case 1 -> signIn();
             case 2 -> createNewUser();
             case 3 -> showAllUsers();
             case 4 -> close();
@@ -123,51 +125,72 @@ class SocialNetwork {
         }
         menuMain();
     }
-    int verifyUsername(String usernameInput) {
-        String usernameToVerify = usernameInput;
+    
+    private void signIn() {
+        verifyUsername();
+        verifyPassword(idOfUsernameVerified);
+        openUserMenu(idAfterPasswordChecked);
+    }
+    
+    void verifyUsername() {
+        String usernameInputToLogin = JOptionPane.showInputDialog(null,
+                DialogFormat.header(" LOGIN de usuário cadastrado ")
+                        + "\n\n> DIGITE seu username: \n\n");
+        boolean inputNotNull = verifyNotNullInput(usernameInputToLogin);
+        if (!inputNotNull) {
+            JOptionPane.showMessageDialog(null,
+                    "Operação cancelada!"
+                            + "\nRetornando ao MENU INICIAL");
+            menuMain();
+        }
         boolean validUser = false;
-        int idVerified = -1;
+        idOfUsernameVerified = -1;
         for (int i = 0; i < users.size(); i++) {
-            if (usernameToVerify.equals(users.get(i).getUsername())) {
+            if (usernameInputToLogin.equals(users.get(i).getUsername())) {
                 validUser = true;
-                idVerified = i;
+                idOfUsernameVerified = i;
+                break;
             }
         }
         if (!validUser) {
             System.out.println("Usuário não cadastrado!");
-//            verifyUsername();
+            verifyUsername();
         }
-        return (idVerified);
     }
-    
-    int verifyPassword(int p) {
-        String title = "VERIFICAÇÃO de senha";
-        String concat = "USERNAME: " + users.get(p).getUsername();
-        System.out.print("\n> Digite sua senha: ");
-        String passwordInput = null;
-//                = input.next();
-        boolean validPassword = false;
-        int idPassword = -1;
-        if (!passwordInput.equals(users.get(p).getPassword())) {
+    void verifyPassword(int userSelectedID) {
+        String passwordInputToLogin = JOptionPane.showInputDialog(null,
+                DialogFormat.header(" LOGIN de usuário cadastrado ")
+                        + "USERNAME: " + users.get(userSelectedID).getUsername()
+                        + "\n\n> DIGITE sua senha: \n\n");
+        boolean inputNotNull = verifyNotNullInput(passwordInputToLogin);
+        if (!inputNotNull) {
+            JOptionPane.showMessageDialog(null,
+                    "Operação cancelada!"
+                            + "\nRetornando ao MENU INICIAL");
+            menuMain();
+        }
+        boolean passwordMatch = false;
+        idAfterPasswordChecked = -1;
+        if (!passwordInputToLogin.equals(users.get(userSelectedID).getPassword())) {
             System.out.println("Acesso NEGADO!!! Tente novamente!");
         } else {
-            validPassword = true;
-            idPassword = p;
+            passwordMatch = true;
+            idAfterPasswordChecked = userSelectedID;
         }
-        if (!validPassword) {
-            verifyPassword(p);
+        if (!passwordMatch) {
+            verifyPassword(userSelectedID);
         }
-        return idPassword;
     }
     
+    
+    private void openUserMenu(int userLogedIn) {
+        System.out.printf("\nMenu do Usuário: %s", users.get(userLogedIn).getName());
+    }
     private void createNewUser() {
         getNewUserID();
         askNewName();
-        JOptionPane.showMessageDialog(null, "Seu NOME é: " + newName);
         askNewUsername();
-        JOptionPane.showMessageDialog(null, "Seu USERNAME é: " + newUsername);
         askNewPassword();
-        JOptionPane.showMessageDialog(null, "Sua SENHA é: " + newPassword);
         String userToConfirm = String.format("\n ID: %d \n NOME: %s \n USERNAME: %s \n SENHA: %s \n",
                 newUserID, newName, newUsername, newPassword);
         String msgToConfirm = DialogFormat.header(" CONFIRMAÇÃO DE CADASTRO? ") + userToConfirm
@@ -217,6 +240,7 @@ class SocialNetwork {
                             + "\nTente novamente.");
             askNewName();
         }
+        JOptionPane.showMessageDialog(null, "Seu NOME é: " + newName);
     }
     private void askNewUsername() {
         String usernameInput = JOptionPane.showInputDialog(null,
@@ -243,6 +267,7 @@ class SocialNetwork {
             }
             askNewUsername();
         }
+        JOptionPane.showMessageDialog(null, "Seu USERNAME é: " + newUsername);
     }
     private void askNewPassword() {
         String passwordInput = JOptionPane.showInputDialog(null,
@@ -269,6 +294,7 @@ class SocialNetwork {
             }
             askNewPassword();
         }
+        JOptionPane.showMessageDialog(null, "Sua SENHA é: " + newPassword);
     }
     private void showAllUsers() {
         String title = DialogFormat.header(" USUÁRIOS CADASTRADOS ");
