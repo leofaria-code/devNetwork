@@ -1,11 +1,11 @@
-package br.com.leofaria.devNetwork.socialNetwork.menu;
+package br.com.leofaria.devNetwork.user.menuUser;
 
-public class MenuMain {
+public class MenuUser {
     public int indexNum;
     public char indexChar;
     public String description;
     
-    public MenuMain(int indexNum, char indexChar, String description) {
+    public MenuUser(int indexNum, char indexChar, String description) {
         this.indexNum = indexNum;
         this.indexChar = indexChar;
         this.description = description;

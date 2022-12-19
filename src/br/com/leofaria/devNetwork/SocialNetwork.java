@@ -1,23 +1,31 @@
-package br.com.leofaria.devNetwork.socialNetwork;
+package br.com.leofaria.devNetwork;
 
-import br.com.leofaria.devNetwork.socialNetwork.menu.EnumMenuOptions;
-import br.com.leofaria.devNetwork.socialNetwork.menu.MenuMain;
-import br.com.leofaria.devNetwork.utility.DialogFormat;
+import br.com.leofaria.devNetwork.post.Post;
 import br.com.leofaria.devNetwork.user.User;
+import br.com.leofaria.devNetwork.utility.DialogFormat;
+import br.com.leofaria.devNetwork.utility.TimeStamp;
+import br.com.leofaria.devNetwork.utility.Verifies.Verify;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-class SocialNetwork {
-//    Scanner input = new Scanner(System.in);
+public class SocialNetwork {
+    private static SocialNetwork instancia = null;
+    public static void main(String[] args) {
+        SocialNetwork instancia = obterInstancia();
+    }
+    public static synchronized SocialNetwork obterInstancia() {
+        if (instancia == null) instancia = new SocialNetwork();
+        return instancia;
+    }
     
     public List<MenuMain> menuMain = new ArrayList<>();
-    public List<User> users = new ArrayList<>();
-//    public List<Post> posts = new ArrayList<>();
+    private static List<User> users = new ArrayList<>();
+    
+    public List<Post> posts = new ArrayList<>();
     
     private String dialogMenuMain;
-    //    private String inputString;
     private int inputNum;
     private int optionAtMenuMain;
     
@@ -30,55 +38,66 @@ class SocialNetwork {
     private String newPassword = null;
     
     SocialNetwork() {
-        addAdm();                                          // adiciona user[0] como ADMIN
         firstRun();
         constructMenuMain();
         menuMain();
     }
     
-    private void addAdm() {
-        final User ADMIN = new User(0,"ADM da SilvaSauro", "admin", "123");
-        users.add(ADMIN);
+    public static List<User> getUsers() {
+        return users;
+    }
+    
+    public static void setUsers(List<User> users) {
+        SocialNetwork.users = users;
+    }
+    
+    private void addAdm() {                     // adiciona user[0] como ADMIN
+        final User ADMIN =
+                new User(0,"ADM da Silva Sauro", "admin", "123");
+        if (getUsers().isEmpty()) {
+            getUsers().add(ADMIN);
+        }
     }
     private void firstRun() {
         clearConsole();
-        welcomeStrange();
+        addAdm();
+        welcomeStranger();
     }
-    public void welcomeStrange(){
+    public void welcomeStranger(){
         String msg = " Seja bem vindo à rede social SINQUIA #dev_makers2, Let's Code by ADA ";
         String welcomeMSG = DialogFormat.header(msg);
         JOptionPane.showMessageDialog(null, welcomeMSG);
     }
     public void constructMenuMain() {
-        final MenuMain ENTRAR = new MenuMain(EnumMenuOptions.ENTRAR.getIndexNum(),
-                EnumMenuOptions.ENTRAR.getIndexChar(),
-                EnumMenuOptions.ENTRAR.getDescription());
-        final MenuMain CADASTRAR = new MenuMain(EnumMenuOptions.CADASTRAR.getIndexNum(),
-                EnumMenuOptions.CADASTRAR.getIndexChar(),
-                EnumMenuOptions.CADASTRAR.getDescription());
-        final MenuMain LISTAR = new MenuMain(EnumMenuOptions.LISTAR.getIndexNum(),
-                EnumMenuOptions.LISTAR.getIndexChar(),
-                EnumMenuOptions.LISTAR.getDescription());
-        final MenuMain FECHAR = new MenuMain(EnumMenuOptions.FECHAR.getIndexNum(),
-                EnumMenuOptions.FECHAR.getIndexChar(),
-                EnumMenuOptions.FECHAR.getDescription());
+        final MenuMain ENTRAR = new MenuMain(MenuMainOptions.ENTRAR.getIndexNum(),
+                MenuMainOptions.ENTRAR.getIndexChar(),
+                MenuMainOptions.ENTRAR.getDescription());
+        final MenuMain CADASTRAR = new MenuMain(MenuMainOptions.CADASTRAR.getIndexNum(),
+                MenuMainOptions.CADASTRAR.getIndexChar(),
+                MenuMainOptions.CADASTRAR.getDescription());
+        final MenuMain LISTAR = new MenuMain(MenuMainOptions.LISTAR.getIndexNum(),
+                MenuMainOptions.LISTAR.getIndexChar(),
+                MenuMainOptions.LISTAR.getDescription());
+        final MenuMain FECHAR = new MenuMain(MenuMainOptions.FECHAR.getIndexNum(),
+                MenuMainOptions.FECHAR.getIndexChar(),
+                MenuMainOptions.FECHAR.getDescription());
         menuMain.add(ENTRAR);
         menuMain.add(CADASTRAR);
         menuMain.add(LISTAR);
         menuMain.add(FECHAR);
     }
-    private void menuMain() {
+    public void menuMain() {
         getInputAtMenuMainConvertedtoNum();
         socialNetworkActions(optionAtMenuMain);
     }
     public void getInputAtMenuMainConvertedtoNum() {
         showMenuMain();
         String inputString = JOptionPane.showInputDialog(null, dialogMenuMain);
-        boolean inputNotNull = verifyNotNullInput(inputString);
+        boolean inputNotNull = Verify.verifyNotNullInput(inputString);
         if (!inputNotNull) {
             close();
         }
-        boolean inputNotEmpty = verifyNotEmptyOrBlankInput(inputString);
+        boolean inputNotEmpty = Verify.verifyNotEmptyOrBlankInput(inputString);
         if (inputNotEmpty) {
             inputString = inputString.toUpperCase();
         } else {
@@ -93,10 +112,10 @@ class SocialNetwork {
         String menuTitle = " MENU PRINCIPAL: o que você deseja fazer? ";
         StringBuilder menu = new StringBuilder(DialogFormat.header(menuTitle));
         for (MenuMain mainMenuOption : menuMain) {
-            String menu_line = "\n" + mainMenuOption.indexNum
+            String menuLine = "\n" + mainMenuOption.indexNum
                     + " - " + mainMenuOption.indexChar
                     + " : " + mainMenuOption.description;
-            menu.append(menu_line);
+            menu.append(menuLine);
         }
         menu.append("\n\n>DIGITE o 'número' ou o 'caractere' correspondente à opção escolhida: \n\n");
         dialogMenuMain = menu.toString();
@@ -125,7 +144,6 @@ class SocialNetwork {
         }
         menuMain();
     }
-    
     private void signIn() {
         verifyUsername();
         verifyPassword(idOfUsernameVerified);
@@ -136,7 +154,7 @@ class SocialNetwork {
         String usernameInputToLogin = JOptionPane.showInputDialog(null,
                 DialogFormat.header(" LOGIN de usuário cadastrado ")
                         + "\n\n> DIGITE seu username: \n\n");
-        boolean inputNotNull = verifyNotNullInput(usernameInputToLogin);
+        boolean inputNotNull = Verify.verifyNotNullInput(usernameInputToLogin);
         if (!inputNotNull) {
             JOptionPane.showMessageDialog(null,
                     "Operação cancelada!"
@@ -145,8 +163,8 @@ class SocialNetwork {
         }
         boolean validUser = false;
         idOfUsernameVerified = -1;
-        for (int i = 0; i < users.size(); i++) {
-            if (usernameInputToLogin.equals(users.get(i).getUsername())) {
+        for (int i = 0; i < getUsers().size(); i++) {
+            if (usernameInputToLogin.equals(getUsers().get(i).getUsername())) {
                 validUser = true;
                 idOfUsernameVerified = i;
                 break;
@@ -160,9 +178,9 @@ class SocialNetwork {
     void verifyPassword(int userSelectedID) {
         String passwordInputToLogin = JOptionPane.showInputDialog(null,
                 DialogFormat.header(" LOGIN de usuário cadastrado ")
-                        + "USERNAME: " + users.get(userSelectedID).getUsername()
+                        + "USERNAME: " + getUsers().get(userSelectedID).getUsername()
                         + "\n\n> DIGITE sua senha: \n\n");
-        boolean inputNotNull = verifyNotNullInput(passwordInputToLogin);
+        boolean inputNotNull = Verify.verifyNotNullInput(passwordInputToLogin);
         if (!inputNotNull) {
             JOptionPane.showMessageDialog(null,
                     "Operação cancelada!"
@@ -171,7 +189,7 @@ class SocialNetwork {
         }
         boolean passwordMatch = false;
         idAfterPasswordChecked = -1;
-        if (!passwordInputToLogin.equals(users.get(userSelectedID).getPassword())) {
+        if (!passwordInputToLogin.equals(getUsers().get(userSelectedID).getPassword())) {
             System.out.println("Acesso NEGADO!!! Tente novamente!");
         } else {
             passwordMatch = true;
@@ -184,7 +202,8 @@ class SocialNetwork {
     
     
     private void openUserMenu(int userLogedIn) {
-        System.out.printf("\nMenu do Usuário: %s", users.get(userLogedIn).getName());
+        System.out.printf("\nMenu do Usuário: %s", getUsers().get(userLogedIn).getName());
+        User.main();
     }
     private void createNewUser() {
         getNewUserID();
@@ -197,7 +216,7 @@ class SocialNetwork {
                 + "\n\n Seus dados estão corretos?  \n\n";
         int confirmExit = confirmationDialog(msgToConfirm);
         if (confirmExit == JOptionPane.YES_OPTION) {
-            users.add(new User(newUserID, newName, newUsername, newPassword));
+            getUsers().add(new User(newUserID, newName, newUsername, newPassword));
         } else {
             menuMain();
         }
@@ -205,7 +224,7 @@ class SocialNetwork {
     }
     private String listThisUser(int id) {
         return String.format("\n ID: %06d - NOME: %-50s - USERNAME: %-20s",
-                users.get(id).getIdUser(), users.get(id).getName(), users.get(id).getUsername());
+                getUsers().get(id).getIdUser(), getUsers().get(id).getName(), getUsers().get(id).getUsername());
     }
     private void showThisUser(int id) {
         String title = DialogFormat.header("CADASTRO CONFIRMADO!");
@@ -213,10 +232,10 @@ class SocialNetwork {
         JOptionPane.showMessageDialog(null, title + thisUser);
     }
     private void getNewUserID() {
-        if (users.isEmpty()) {
+        if (getUsers().isEmpty()) {
             newUserID = 0;
         } else {
-            newUserID = users.size();
+            newUserID = getUsers().size();
         }
         JOptionPane.showMessageDialog(null, "Seu ID de usuário é: " + newUserID);
     }
@@ -224,14 +243,14 @@ class SocialNetwork {
         String nameInput = JOptionPane.showInputDialog(null,
                 DialogFormat.header(" CADASTRO de novo usuário ")
                         + "\n\n> CADASTRE seu nome: \n\n");
-        boolean inputNotNull = verifyNotNullInput(nameInput);
+        boolean inputNotNull = Verify.verifyNotNullInput(nameInput);
         if (!inputNotNull) {
             JOptionPane.showMessageDialog(null,
                     "Operação cancelada!"
                             + "\nRetornando ao MENU INICIAL");
             menuMain();
         }
-        boolean nameNotEmpty = verifyNotEmptyOrBlankInput(nameInput);
+        boolean nameNotEmpty = Verify.verifyNotEmptyOrBlankInput(nameInput);
         if (nameNotEmpty) {
             newName = nameInput;
         } else {
@@ -246,14 +265,14 @@ class SocialNetwork {
         String usernameInput = JOptionPane.showInputDialog(null,
                 DialogFormat.header(" CADASTRO de novo usuário ")
                         + "\n\n> CADASTRE seu novo username exclusivo: \n\n");
-        boolean inputNotNull = verifyNotNullInput(usernameInput);
+        boolean inputNotNull = Verify.verifyNotNullInput(usernameInput);
         if (!inputNotNull) {
             JOptionPane.showMessageDialog(null,
                     "Operação cancelada!"
                             + "\nRetornando ao MENU INICIAL");
             menuMain();
         }
-        boolean usernameNotEmpty = verifyNotEmptyOrBlankInput(usernameInput);
+        boolean usernameNotEmpty = Verify.verifyNotEmptyOrBlankInput(usernameInput);
         boolean usernameUnique = verifyUsernameAvialable(usernameInput);
         if (usernameNotEmpty && usernameUnique) {
             newUsername = usernameInput.toLowerCase();
@@ -273,14 +292,14 @@ class SocialNetwork {
         String passwordInput = JOptionPane.showInputDialog(null,
                 DialogFormat.header(" CADASTRO de novo usuário ")
                         + "\n\n> CADASTRE sua senha: \n\n");
-        boolean inputNotNull = verifyNotNullInput(passwordInput);
+        boolean inputNotNull = Verify.verifyNotNullInput(passwordInput);
         if (!inputNotNull) {
             JOptionPane.showMessageDialog(null,
                     "Operação cancelada!"
                             + "\nRetornando ao MENU INICIAL");
             menuMain();
         }
-        boolean passwordNotEmpty = verifyNotEmptyOrBlankInput(passwordInput);
+        boolean passwordNotEmpty = Verify.verifyNotEmptyOrBlankInput(passwordInput);
         boolean samePasswordInputTwice = verifySameInputTwice(passwordInput);
         if (passwordNotEmpty && samePasswordInputTwice) {
             newPassword = passwordInput;
@@ -299,21 +318,15 @@ class SocialNetwork {
     private void showAllUsers() {
         String title = DialogFormat.header(" USUÁRIOS CADASTRADOS ");
         StringBuilder allUsers = new StringBuilder();
-        for (int i = 0; i < users.size(); i++) {
+        for (int i = 0; i < getUsers().size(); i++) {
             allUsers.append(listThisUser(i));
         }
         JOptionPane.showMessageDialog(null, title + allUsers);
     }
-    boolean verifyNotNullInput(String input) {
-        return (input != null);
-    }
-    public boolean verifyNotEmptyOrBlankInput(String userInput) {
-        return (!userInput.isEmpty() && !userInput.isBlank());
-    }
     private boolean verifyUsernameAvialable(String usernameInput) {
         boolean usernameAlreadyTaken = false;
-        for (User user:users) {
-            if (usernameInput.equalsIgnoreCase(users.get(user.idUser).getUsername())) {
+        for (br.com.leofaria.devNetwork.user.User user: getUsers()) {
+            if (usernameInput.equalsIgnoreCase(getUsers().get(user.idUser).getUsername())) {
                 usernameAlreadyTaken = true;
                 break;
             }
@@ -327,8 +340,9 @@ class SocialNetwork {
         return (input.equals(inputAgain));
     }
     private void close() {
-        String msgToConfirm = DialogFormat.header(" SAIR DA APLICAÇÃO? ") +
-                "\n\n> Você deseja fechar o programa? \n\n";
+        String msgToConfirm = DialogFormat.header(" SAIR DA APLICAÇÃO? ")
+                + TimeStamp.getTimeStamp()
+                +"\n\n> Você deseja fechar o programa? \n\n";
         int confirmExit = confirmationDialog(msgToConfirm);
         if (confirmExit == JOptionPane.YES_OPTION) {
             System.exit(0);
