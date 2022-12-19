@@ -123,14 +123,41 @@ class SocialNetwork {
         }
         menuMain();
     }
-    
-    private void showAllUsers() {
-        String title = DialogFormat.header(" USUÁRIOS CADASTRADOS ");
-        StringBuilder allUsers = new StringBuilder();
+    int verifyUsername(String usernameInput) {
+        String usernameToVerify = usernameInput;
+        boolean validUser = false;
+        int idVerified = -1;
         for (int i = 0; i < users.size(); i++) {
-            allUsers.append(listThisUser(i));
+            if (usernameToVerify.equals(users.get(i).getUsername())) {
+                validUser = true;
+                idVerified = i;
+            }
         }
-        JOptionPane.showMessageDialog(null, title + allUsers);
+        if (!validUser) {
+            System.out.println("Usuário não cadastrado!");
+//            verifyUsername();
+        }
+        return (idVerified);
+    }
+    
+    int verifyPassword(int p) {
+        String title = "VERIFICAÇÃO de senha";
+        String concat = "USERNAME: " + users.get(p).getUsername();
+        System.out.print("\n> Digite sua senha: ");
+        String passwordInput = null;
+//                = input.next();
+        boolean validPassword = false;
+        int idPassword = -1;
+        if (!passwordInput.equals(users.get(p).getPassword())) {
+            System.out.println("Acesso NEGADO!!! Tente novamente!");
+        } else {
+            validPassword = true;
+            idPassword = p;
+        }
+        if (!validPassword) {
+            verifyPassword(p);
+        }
+        return idPassword;
     }
     
     private void createNewUser() {
@@ -154,16 +181,14 @@ class SocialNetwork {
         showThisUser(newUserID);
     }
     private String listThisUser(int id) {
-        String userPrint = String.format("\n ID: %06d - NOME: %-50s - USERNAME: %-20s",
+        return String.format("\n ID: %06d - NOME: %-50s - USERNAME: %-20s",
                 users.get(id).getIdUser(), users.get(id).getName(), users.get(id).getUsername());
-        return userPrint;
     }
     private void showThisUser(int id) {
         String title = DialogFormat.header("CADASTRO CONFIRMADO!");
         String thisUser = listThisUser(id);
         JOptionPane.showMessageDialog(null, title + thisUser);
     }
-    
     private void getNewUserID() {
         if (users.isEmpty()) {
             newUserID = 0;
@@ -244,6 +269,14 @@ class SocialNetwork {
             }
             askNewPassword();
         }
+    }
+    private void showAllUsers() {
+        String title = DialogFormat.header(" USUÁRIOS CADASTRADOS ");
+        StringBuilder allUsers = new StringBuilder();
+        for (int i = 0; i < users.size(); i++) {
+            allUsers.append(listThisUser(i));
+        }
+        JOptionPane.showMessageDialog(null, title + allUsers);
     }
     boolean verifyNotNullInput(String input) {
         return (input != null);

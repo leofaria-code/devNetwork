@@ -10,7 +10,7 @@ public class User {
     public int idUser;
     private String name;
     private String username;
-    private String password;
+    public String password;
     
     private List<Post> userPost;
     
