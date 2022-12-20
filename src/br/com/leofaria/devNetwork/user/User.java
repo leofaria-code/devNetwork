@@ -1,12 +1,11 @@
 package br.com.leofaria.devNetwork.user;
 
-import br.com.leofaria.devNetwork.SocialNetwork;
-import br.com.leofaria.devNetwork.post.Post;
-import br.com.leofaria.devNetwork.user.menuUser.EnumMenuUserOptions;
+import br.com.leofaria.devNetwork.user.post.Post;
+import br.com.leofaria.devNetwork.user.menuUser.MenuUserOptions;
 import br.com.leofaria.devNetwork.user.menuUser.MenuUser;
 import br.com.leofaria.devNetwork.utility.DialogFormat;
 import br.com.leofaria.devNetwork.utility.TimeStamp;
-import br.com.leofaria.devNetwork.utility.Verifies.Verify;
+import br.com.leofaria.devNetwork.utility.Verify;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -18,8 +17,34 @@ public class User {
     private String username;
     private String password;
     
-    private List<Post> userPosts;
+    public List<Post> userPosts = new ArrayList<>();
     public List<MenuUser> menuUser = new ArrayList<>();
+    
+    public User(int idUser, String name, String username, String password) {
+        this.idUser = idUser;
+        this.name = name;
+        this.username = username;
+        this.password = password;
+//        this.userPosts = new ArrayList<Post>();
+//        this.menuUser = new ArrayList<MenuUser>();
+    }
+    
+    public int getIdUser() {
+        return idUser;
+    }
+    public String getName() {
+        return name;
+    }
+    public String getUsername() {
+        return username;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public List<Post> getUserPosts() {
+        return userPosts;
+    }
+    
     
     private static User instancia = null;
     public static void main() {
@@ -34,65 +59,35 @@ public class User {
         constructMenuUser();
         menuUser();
     }
-
-
-    public User(int idUser, String name, String username, String password) {
-        this.idUser = idUser;
-        this.name = name;
-        this.username = username;
-        this.password = password;
-        this.userPosts = new ArrayList<Post>();
-    }
-
-
+    
     private String dialogMenuUser;
     private int inputNum;
     private int optionAtMenuUser;
     
-    public void menuUser() {
+    public void constructMenuUser() {
+        final MenuUser POSTAR = new MenuUser(MenuUserOptions.POSTAR.getIndexNum(),
+                MenuUserOptions.POSTAR.getIndexChar(),
+                MenuUserOptions.POSTAR.getDescription());
+        final MenuUser TIMELINE = new MenuUser(MenuUserOptions.TIMELINE.getIndexNum(),
+                MenuUserOptions.TIMELINE.getIndexChar(),
+                MenuUserOptions.TIMELINE.getDescription());
+        final MenuUser FEED = new MenuUser(MenuUserOptions.FEED.getIndexNum(),
+                MenuUserOptions.FEED.getIndexChar(),
+                MenuUserOptions.FEED.getDescription());
+        final MenuUser LOGOUT = new MenuUser(MenuUserOptions.SAIR.getIndexNum(),
+                MenuUserOptions.SAIR.getIndexChar(),
+                MenuUserOptions.SAIR.getDescription());
+        menuUser.add(POSTAR);
+        menuUser.add(TIMELINE);
+        menuUser.add(FEED);
+        menuUser.add(LOGOUT);
+    }
+    
+    void menuUser() {
         getInputAtMenuUserConvertedtoNum();
         userActions(optionAtMenuUser);
     }
-
-    private void userActions(int num) {
-        switch (num) {
-            case 1 -> userMakeNewPost(idUser);
-            case 2 -> showUserTimeline();
-            case 3 -> showAllUsersFeed();
-            case 4 -> logout();
-            default -> JOptionPane.showMessageDialog(null, "Opção inválida! Tente novamente");
-        }
-        menuUser();
-    }
     
-    private void logout() {
-        SocialNetwork.main(null);
-    }
-    
-    private void showAllUsersFeed() {
-        System.out.println("FEED da rede xxxxxxxxxx");
-    }
-
-    private void showUserTimeline() {
-        String msg = "Usuário: ";
-        String concat = msg + this.username;
-        System.out.printf("\n%s %-94s %3s", "|", concat, "|");
-
-        for (int i = 0; i < userPosts.size(); i++) {
-            printFormatedPost(i);
-        }
-//        for (int iP = 0; iP < userPosts.size(); iP++) {
-//            Post.printFormatedPost(iP);
-//            Main.printLine('.');
-//        }
-    }
-    public void printFormatedPost(int idPostUser) {
-        System.out.printf("\n| %-92s %03d |", "POST Nº", userPosts.get(idPostUser).idPostUser);
-        System.out.printf("\n| %96s |", userPosts.get(idPostUser).timeStamp);
-        System.out.printf("\n| %-96s |", userPosts.get(idPostUser).content);
-        System.out.printf("\n| %91s %04d |", "ID do usuário:", userPosts.get(idPostUser).idUser);
-    }
-
     private void getInputAtMenuUserConvertedtoNum() {
         showMenuUser();
         String inputString = JOptionPane.showInputDialog(null, dialogMenuUser);
@@ -105,16 +100,15 @@ public class User {
             inputString = inputString.toUpperCase();
         } else {
             JOptionPane.showMessageDialog(null,
-                    "Opção VAZIA ou BRANCA é inválida!"
-                            + "\nTente novamente!");
+                    "Opção VAZIA ou BRANCA é inválida!" + "\nTente novamente!");
             getInputAtMenuUserConvertedtoNum();
         }
         optionAtMenuUser = convertInputStringToNum(inputString);
     }
-    private void showMenuUser() {
+        private void showMenuUser() {
         String menuTitle = " MENU DO USUÁRIO: o que você deseja fazer? ";
         StringBuilder menu = new StringBuilder(DialogFormat.header(menuTitle));
-        for (MenuUser menuUserOption : menuUser) {
+        for (MenuUser menuUserOption : this.menuUser) {
             String menuLine = "\n" + menuUserOption.indexNum
                     + " - " + menuUserOption.indexChar
                     + " : " + menuUserOption.description;
@@ -122,8 +116,8 @@ public class User {
         }
         menu.append("\n\n>DIGITE o 'número' ou o 'caractere' correspondente à opção escolhida: \n\n");
         dialogMenuUser = menu.toString();
-    }
-    private int convertInputStringToNum(String inputString) {
+        }
+        private int convertInputStringToNum(String inputString) {
         switch (inputString) {
             case "P", "1" -> inputNum = 1;
             case "T", "2" -> inputNum = 2;
@@ -136,74 +130,62 @@ public class User {
             }
         }
         return inputNum;
+        }
+        
+    private void userActions(int num) {
+        switch (num) {
+            case 1 -> userMakeNewPost();
+            case 2 -> showUserTimeline();
+            case 3 -> showAllUsersFeed();
+            case 4 -> logout();
+            default -> JOptionPane.showMessageDialog(null, "Opção inválida! Tente novamente");
+        }
+        menuUser();
     }
-
-    public int getIdUser() {
-        return idUser;
-    }
-    public String getName() {
-        return name;
-    }
-    public String getUsername() {
-        return username;
-    }
-    public String getPassword() {
-        return password;
-    }
-
-//    private void setName(String name) {
-//        this.name = name;
-//    }
-//    private void setUsername(String username) {
-//        this.username = username;
-//    }
-//    private void setPassword(String password) {
-//        this.password = password;
-//    }
-
-    public void constructMenuUser() {
-        final MenuUser POSTAR = new MenuUser(EnumMenuUserOptions.POSTAR.getIndexNum(),
-                EnumMenuUserOptions.POSTAR.getIndexChar(),
-                EnumMenuUserOptions.POSTAR.getDescription());
-        final MenuUser TIMELINE = new MenuUser(EnumMenuUserOptions.TIMELINE.getIndexNum(),
-                EnumMenuUserOptions.TIMELINE.getIndexChar(),
-                EnumMenuUserOptions.TIMELINE.getDescription());
-        final MenuUser FEED = new MenuUser(EnumMenuUserOptions.FEED.getIndexNum(),
-                EnumMenuUserOptions.FEED.getIndexChar(),
-                EnumMenuUserOptions.FEED.getDescription());
-        final MenuUser LOGOUT = new MenuUser(EnumMenuUserOptions.LOGOUT.getIndexNum(),
-                EnumMenuUserOptions.LOGOUT.getIndexChar(),
-                EnumMenuUserOptions.LOGOUT.getDescription());
-        menuUser.add(POSTAR);
-        menuUser.add(TIMELINE);
-        menuUser.add(FEED);
-        menuUser.add(LOGOUT);
-    }
-
-//    public List<Post> getUserPost() {
-//        return userPost;
-//    }
-//
-    private void userMakeNewPost(int idUser) {
+    
+    private void userMakeNewPost() {
         int newPostIdUser;
-//        if (this.userPosts.isEmpty()) {
-//            newPostIdUser = 0;
-//        } else {
-//            newPostIdUser = userPosts.size();
-//        }
-        newPostIdUser = 0;
-
+        
+        if (getUserPosts().isEmpty()) {
+            newPostIdUser = 0;
+        } else {
+            newPostIdUser = this.userPosts.size();
+        }
+        
         String msg = "Criação de novo POST de ";
-        String name = SocialNetwork.getUsers().get(idUser).getUsername().toUpperCase();
-        String concat = msg + name;
+        String concat = msg + this.name;
         System.out.printf("\n%s %-94s %3s", "|",  concat, "|");
-
-        System.out.printf("\n> Post Nº %03d - usuário: %s ", newPostIdUser, SocialNetwork.getUsers().get(idUser).getUsername());
+        System.out.printf("\n> Post Nº [%03d] do usuário: [%s] ", newPostIdUser, this.username);
         String timestamp = TimeStamp.getTimeStamp();
         System.out.print("\n> Digite o conteúdo: ");
-        String content = "TEssste";
-        userPosts.add(new Post(newPostIdUser, idUser, timestamp, content));
+        String content = "TESTE DE POSTAGEM DO USER";
+        
+        userPosts.add(new Post(newPostIdUser, this.idUser, timestamp, content));
+        printFormatedPost(this.userPosts.size() - 1);
     }
-
+    
+    private void showUserTimeline() {
+        String msg = "Usuário: ";
+        String concat = msg + this.username;
+        System.out.printf("\n%s %-94s %3s", "|", concat, "|");
+        for (int i = 0; i < userPosts.size(); i++) {
+            printFormatedPost(i);
+        }
+    }
+        public void printFormatedPost(int idPostUser) {
+        System.out.printf("\n| %-92s %03d |", "POST Nº", this.userPosts.get(idPostUser).idPostUser);
+        System.out.printf("\n| %96s |", this.userPosts.get(idPostUser).timeStamp);
+        System.out.printf("\n| %-96s |", this.userPosts.get(idPostUser).content);
+        System.out.printf("\n| %91s %04d |", "ID do usuário:", this.userPosts.get(idPostUser).idUser);
+        }
+    
+    private void showAllUsersFeed() {
+        System.out.println("FEED de todos os usuário da rede!");
+    } // ???
+    
+    private void logout() {
+        System.out.println("VOLTAR AO MENU MAIN"); //SocialNetwork.main(null);
+    }
+    
 }
 

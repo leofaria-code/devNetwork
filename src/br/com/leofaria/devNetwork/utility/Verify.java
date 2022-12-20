@@ -1,4 +1,4 @@
-package br.com.leofaria.devNetwork.utility.Verifies;
+package br.com.leofaria.devNetwork.utility;
 
 public class Verify {
     public static boolean verifyNotEmptyOrBlankInput(String input) {

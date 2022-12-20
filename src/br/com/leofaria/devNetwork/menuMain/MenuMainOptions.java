@@ -1,22 +1,23 @@
-package br.com.leofaria.devNetwork.user.menuUser;
+package br.com.leofaria.devNetwork.menuMain;
 
-public enum EnumMenuUserOptions {
+public enum MenuMainOptions {
     FUNCAO_RESERVADA(0,'#', "### RESERVADO ###"),
     
-    POSTAR(1, 'P', "POSTAR alguma coisa"),
-    TIMELINE(2, 'T', "Exibir minha TIMELINE"),
-    FEED(3, 'F', "Exibir FEED de todos os usuários"),
-    LOGOUT(4, 'X', "LOGOUT");
+    ENTRAR(1, 'E', "ENTRAR no seu perfil"),
+    CADASTRAR(2, 'C', "CADASTRAR um novo usuário"),
+    LISTAR(3, 'L', "LISTAR perfis cadastrados"),
+    FECHAR(4, 'X', "FECHAR a aplicação");
     
     private final int indexNum;
     private final char indexChar;
     private final String description;
     
-    EnumMenuUserOptions(int num, char c, String description){
-        this.indexNum = num;
-        this.indexChar = c;
+    MenuMainOptions(int indexNum, char indexChar, String description){
+        this.indexNum = indexNum;
+        this.indexChar = indexChar;
         this.description = description;
     }
+    
     public int getIndexNum(){
         return indexNum;
     }

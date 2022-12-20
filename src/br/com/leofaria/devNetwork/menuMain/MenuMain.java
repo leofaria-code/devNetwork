@@ -1,4 +1,4 @@
-package br.com.leofaria.devNetwork;
+package br.com.leofaria.devNetwork.menuMain;
 
 public class MenuMain {
     public int indexNum;
