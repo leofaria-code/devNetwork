@@ -9,11 +9,13 @@ public class TimeStamp {
         DateTimeFormatter formatterData = DateTimeFormatter.ofPattern("dd/MM/uuuu");
         return (formatterData.format(now));
     }
+    
     public static String getTime() {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("HH:mm:ss");
         return (formatterHora.format(now));
     }
+    
     public static String getTimeStamp() {
         return (getDate() + ", " + getTime());
     }

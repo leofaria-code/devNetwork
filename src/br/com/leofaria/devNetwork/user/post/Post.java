@@ -13,17 +13,4 @@ public class Post {
         this.content = content;
     }
     
-//    public int getIdPostUser() {
-//        return idPostUser;
-//    }
-//    public int getIdUser() {
-//        return idUser;
-//    }
-//    public String getTimeStamp() {
-//        return timeStamp;
-//    }
-//    public String getContent() {
-//        return content;
-//    }
-    
 }
